@@ -1,10 +1,8 @@
 import pandas as pd
 import scipy.io
+from config import *
 import mat73
-timing_table_path = f"../data/timing_table.csv"
-mat_file_path ='../data/{date}/{pair}/Matt_files/behaviorVectors_fa_miss.mat'
-roi_ca_data = 'ROICaData_stim'
-n_area = 24
+
 
 def load_data():
     mice_dfs = []
@@ -22,7 +20,7 @@ def load_timing_table() -> pd.DataFrame:
 
 def load_trial_data(trial_row):
     date, pair, trial_num, start_event, end_event, winner = trial_row['DATE'],\
-        trial_row['PAIR'], trial_row['TRAIL'], trial_row['START NEURAL EVENT'],\
+        trial_row['PAIR'], trial_row['TRAIL']-1, trial_row['START NEURAL EVENT'],\
         trial_row['END NEURAL EVENT'], trial_row['WINNER NUM']
 
     data_path = mat_file_path.format(date= date,pair= pair)
@@ -39,5 +37,6 @@ def load_trial_data(trial_row):
             mouse_2['win'] = 0
         return mouse_1, mouse_2
     except Exception as error:
+        # print(data_path)
         print(error)
         return None, None
