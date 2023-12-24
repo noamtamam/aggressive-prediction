@@ -1,14 +1,15 @@
 import pandas as pd
+from sklearn.preprocessing import StandardScaler
 import scipy.io
 from config import *
 import mat73
 
 
-def load_data():
+def load_data(standardize=True):
     mice_dfs = []
     timing_table = load_timing_table()
     for idx, row in timing_table.iterrows():
-        mouse_1, mouse_2 = load_trial_data(row)
+        mouse_1, mouse_2 = load_trial_data(row, standardize)
         mice_dfs.extend([mouse_1, mouse_2])
     return mice_dfs
 
@@ -18,7 +19,7 @@ def load_timing_table() -> pd.DataFrame:
     timing_table['DATE'] = timing_table['DATE'].astype('int').astype('str')
     return timing_table
 
-def load_trial_data(trial_row):
+def load_trial_data(trial_row, standardize):
     date, pair, trial_num, start_event, end_event, winner = trial_row['DATE'],\
         trial_row['PAIR'], trial_row['TRAIL']-1, trial_row['START NEURAL EVENT'],\
         trial_row['END NEURAL EVENT'], trial_row['WINNER NUM']
@@ -31,6 +32,9 @@ def load_trial_data(trial_row):
         mouse_2 = pd.DataFrame(data[n_area:,:]).transpose()
         mouse_2.columns = area_names
         mouse_1.columns = area_names
+        # trans = StandardScaler()
+        # mouse_1 = pd.DataFrame(trans.fit_transform(mouse_1), columns=area_names)
+        # mouse_2 = pd.DataFrame(trans.fit_transform(mouse_2), columns=area_names)
         if winner == 0:
             mouse_1['win'] = 0
             mouse_2['win'] = 1

@@ -2,6 +2,7 @@ timing_table_path = f"../data/timing_table.csv"
 mat_file_path ='../data/{date}/{pair}/Matt_files/behaviorVectors_fa_miss.mat'
 roi_ca_data = 'ROICaData_stim'
 n_area = 24
+target = 'win'
 area_names = ['A1-f1-DI',
  'A1-f2-Cl',
  'A1-f3-Cpu',
