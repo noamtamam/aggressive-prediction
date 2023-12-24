@@ -43,3 +43,4 @@ if __name__ == '__main__':
     # read on analysis methods on time based data
     # try different SVM models
     # read and do more preprocessing
+    # try only one on one nice fight
