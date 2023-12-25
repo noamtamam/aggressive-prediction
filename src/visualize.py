@@ -7,7 +7,7 @@ from config import *
 # todo make title more informative
 # todo save paths in config
 # todo create folders for each plot
-def plot_heatmap(trial_data, names):
+def plot_heatmap(trial_data, names, n_df):
     if trial_data["win"][0] == 0:
         title = "loser"
     else:
@@ -23,6 +23,7 @@ def plot_heatmap(trial_data, names):
         ,xaxis=dict(
         showticklabels=True  # Set showticklabels to False to hide x-axis labels
     ))
+    fig.write_image(f"../graphs/heatmap_brain_activity/brain_activity_{n_df}_{title}.png")
     # fig.show()
 
 def plot_area_activity_histogram(data):
