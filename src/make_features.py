@@ -7,11 +7,13 @@ import mat73
 
 
 def load_data(standardize=True):
+    print("Loading the data to dataframes...", end="")
     mice_dfs = []
     timing_table = load_timing_table()
     for idx, row in timing_table.iterrows():
         mouse_1, mouse_2 = load_trial_data(row, standardize)
         mice_dfs.extend([mouse_1, mouse_2])
+    print("finished!")
     return mice_dfs
 
 def load_timing_table() -> pd.DataFrame:
@@ -49,3 +51,4 @@ def load_trial_data(trial_row, standardize):
         # print(data_path)
         # print(error)
         return None, None
+

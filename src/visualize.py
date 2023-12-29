@@ -3,6 +3,7 @@ import plotly.io as pio
 pio.renderers.default = "browser"
 import plotly.express as px
 from config import *
+SAVE = False
 
 # todo make title more informative
 # todo save paths in config
@@ -23,14 +24,19 @@ def plot_heatmap(trial_data, names, n_df):
         ,xaxis=dict(
         showticklabels=True  # Set showticklabels to False to hide x-axis labels
     ))
-    fig.write_image(f"../graphs/heatmap_brain_activity/brain_activity_{n_df}_{title}.png")
+    if SAVE:
+        fig.write_image(f"../graphs/heatmap_brain_activity/brain_activity_{n_df}_{title}.png")
     # fig.show()
 
 def plot_area_activity_histogram(data):
     for col in data.columns:
         fig = px.histogram(y=data[col], color=data.win, title=col)
-        fig.write_html(f"../graphs/histogram_area/histogram_{col}_winner_loser.html")
+        if SAVE:
+            fig.write_html(f"../graphs/histogram_area/histogram_{col}_winner_loser.html")
 
+def plot_bar_area_activity(data):
+    fig = px.bar(data, x="nation", y="count", color="medal", title="Long-Form Input")
+    fig.show()
 
 def plot_PCA(pca_data, variance, n_dim):
     if n_dim == 2:
@@ -42,5 +48,6 @@ def plot_PCA(pca_data, variance, n_dim):
             title=f'Total Explained Variance: {variance:.2f}%',
             labels={'0': 'PC 1', '1': 'PC 2', '2': 'PC 3'}
         )
-    fig.write_html(f"../graphs/PCA/PCA_{n_dim}_component.html")
+    if SAVE:
+        fig.write_html(f"../graphs/PCA/PCA_{n_dim}_component.html")
 
