@@ -5,65 +5,11 @@ from sklearn import metrics
 from sklearn.model_selection import cross_val_score, KFold
 import pandas as pd
 from sklearn.decomposition import PCA
-from sklearn.inspection import permutation_importance
 from sklearn.preprocessing import StandardScaler
-
 from config import *
 from sklearn.svm import SVC
 
 def run_svm(X, Y, c):
-    # # Define the parameter grid
-    # param_grid = {
-    #     'chunk_size': [1, 2, 5, 10, 20, 30, 40, 50],
-    #     'C': [0.1, 1, 10],
-    #     'kernel': ['linear', 'rbf']
-    # }
-    #
-    # # Split your data into training and testing sets
-    #
-    # # Initialize the SVM model
-    # svm_model = svm()
-    #
-    # # Create the GridSearchCV object
-    # grid_search = GridSearchCV(estimator=svm_model, param_grid=param_grid, cv=5, scoring='accuracy')
-    #
-    # # Iterate over the combinations of parameters
-    # for chunk_size in param_grid['chunk_size']:
-    #     X_resmapled = None
-    #     y_resampled = None
-    #
-    #     X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
-    #     # Apply your custom resampling logic
-    #     # For example, you can create chunks of data based on the specified size
-    #     # You'll need to implement your own logic here based on your requirements
-    #
-    #
-    #     # Set the current chunk size in the parameters
-    #     grid_search.param_grid['chunk_size'] = [chunk_size]
-    #
-    #     # Fit the model with the current parameters
-    #     grid_search.fit(X_train_resampled, y_train_resampled)
-    #
-    #     # Print the results for the current chunk size
-    #     print(
-    #         f"Chunk Size: {chunk_size}, Best Parameters: {grid_search.best_params_}, Best Score: {grid_search.best_score_}")
-    #
-    # # Get the best parameters from the grid search
-    # best_params = grid_search.best_params_
-    #
-    # # Train the final model using the best parameters on the entire training set
-    # final_model = SVC(**best_params)
-    # final_model.fit(X_train, y_train)
-    #
-    # # Evaluate the final model on the test set
-    # y_pred = final_model.predict(X_test)
-    # accuracy = accuracy_score(y_test, y_pred)
-    # print(f"Final Model Accuracy: {accuracy}")
-
-
-    # X_train, X_test, y_train, y_test = train_test_split(X,Y, test_size=0.3,
-    #                                                     random_state=109)  # 70% training and 30% test
-
     #Create a svm Classifier
     print("Training SVM model...", end="")
     clf = svm.SVC(kernel='linear', C=c) # Linear Kernel
@@ -79,24 +25,6 @@ def run_svm(X, Y, c):
     clf.fit(X, Y)
     print("Finished!")
     return clf
-
-
-
-    #Train the model using the training sets
-    # clf.fit(X_train, y_train)
-
-    #Predict the response for test dataset
-    # y_pred = clf.predict(X_test)
-    # Import scikit-learn metrics module for accuracy calculation
-
-
-    # Model Accuracy: how often is the classifier correct?
-    # print("Accuracy:", metrics.accuracy_score(y_test, y_pred))
-    # Model Precision: what percentage of positive tuples are labeled as such?
-    # print("Precision:",metrics.precision_score(y_test, y_pred))
-
-    # Model Recall: what percentage of positive tuples are labelled as such?
-    # print("Recall:",metrics.recall_score(y_test, y_pred) )
 
 def get_features_importance(svm_m):
     # Access the coefficients (weights) for each feature
