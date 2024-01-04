@@ -1,3 +1,4 @@
+import sklearn
 from sklearn.metrics import accuracy_score
 from sklearn.model_selection import GridSearchCV, train_test_split
 from sklearn import svm
@@ -8,7 +9,9 @@ from sklearn.decomposition import PCA
 from sklearn.preprocessing import StandardScaler
 from config import *
 from sklearn.svm import SVC
-
+#%%
+from joblib import Parallel, delayed
+import numpy as np
 def run_svm(X, Y, c):
     #Create a svm Classifier
     print("Training SVM model...", end="")
@@ -20,12 +23,9 @@ def run_svm(X, Y, c):
 
     print(f'Cross-Validation Results (Accuracy): {cross_val_results}')
     print(f'Mean Accuracy: {cross_val_results.mean()}')
-
-    # Fit the model to the entire dataset
-    clf.fit(X, Y)
+    observed_accuracy = cross_val_results.mean()
     print("Finished!")
-    return clf
-
+    return clf, observed_accuracy
 def get_features_importance(svm_m):
     # Access the coefficients (weights) for each feature
     coefficients = svm_m.coef_[0].tolist()
@@ -34,6 +34,37 @@ def get_features_importance(svm_m):
     for pair in sorted_pairs:
         print(pair)
 
+def compute_model_significance(svm_m, X, Y, observed_accuracy):
+    n_permutations = 1000
+    # Create an array to store permuted accuracies
+    permuted_accuracies = np.zeros(n_permutations)
+    num_folds = 10
+    kf= KFold(n_splits=num_folds, shuffle=True, random_state=42)
+    def compute_permuted_accuracy():
+        # Shuffle the labels
+        shuffled_labels = sklearn.utils.shuffle(Y)
+
+        # Compute accuracy with shuffled labels
+        shuffled_scores = cross_val_score(svm_m, X, shuffled_labels, cv=kf)
+        return np.mean(shuffled_scores)
+
+    # Parallelize the permutation test
+    permuted_accuracies = Parallel(n_jobs=-1)(delayed(compute_permuted_accuracy)() for _ in range(n_permutations))
+
+    # Compute the p-value
+    p_value = (np.sum(permuted_accuracies >= observed_accuracy) + 1) / (n_permutations + 1)
+
+    # Print results
+    print("Observed Accuracy:", observed_accuracy)
+    print("Permuted Accuracies:", permuted_accuracies)
+    print("P-value:", p_value)
+
+    # Interpret the results   
+    alpha = 0.05  # significance level
+    if p_value < alpha:
+        print("\nThe observed accuracy is significantly different from random chance.")
+    else:
+        print("\nThe observed accuracy is not significantly different from random chance.")
 
 def find_best_model(df_data_lst):
     print("Looking for the best model..")
