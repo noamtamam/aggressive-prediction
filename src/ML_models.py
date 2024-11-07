@@ -20,24 +20,20 @@ def run_svm(X, Y, c):
     kf = KFold(n_splits=num_folds, shuffle=True, random_state=42)
     cross_val_results  = cross_val_score(clf, X, Y, cv=kf)
 
-
+    clf.fit(X, Y)
     print(f'Cross-Validation Results (Accuracy): {cross_val_results}')
     print(f'Mean Accuracy: {cross_val_results.mean()}')
     observed_accuracy = cross_val_results.mean()
     print("Finished!")
     return clf, observed_accuracy
-def get_features_importance(svm_m):
-    # Access the coefficients (weights) for each feature
-    coefficients = svm_m.coef_[0].tolist()
-    sorted_pairs = sorted(zip(coefficients, area_names), key=lambda x: abs(x[0]), reverse=True)
-    print("coefficient in descending magnificent order:")
-    for pair in sorted_pairs:
-        print(pair)
 
+"""
+preform a permutation test on the accuracy and data given
+for 100 times shuffle the label column and and test the accuracy on the given model
+calculate a p-value to represent the amount of time the random data was more acurate than the original accuracy. 
+"""
 def compute_model_significance(svm_m, X, Y, observed_accuracy):
-    n_permutations = 1000
-    # Create an array to store permuted accuracies
-    permuted_accuracies = np.zeros(n_permutations)
+    n_permutations = 100
     num_folds = 10
     kf= KFold(n_splits=num_folds, shuffle=True, random_state=42)
     def compute_permuted_accuracy():
@@ -66,11 +62,16 @@ def compute_model_significance(svm_m, X, Y, observed_accuracy):
     else:
         print("\nThe observed accuracy is not significantly different from random chance.")
 
-def find_best_model(df_data_lst):
+"""
+on the given data preforms a grid search on the model parameters and resampling
+to find the best C parameter.
+prints the results
+"""
+def find_best_model(df_data_lst: list):
     print("Looking for the best model..")
     # Define the parameter grid
     param_grid = {
-        'C': [0.1, 1, 10],
+        'C': [0.1, 0.3, 0.7, 1,5, 10],
         'kernel': ['linear']
     }
 
@@ -86,7 +87,7 @@ def find_best_model(df_data_lst):
         resampled_dfs = resample_dfs(chunk_size, df_data_lst)
         all_data = pd.concat(resampled_dfs).reset_index(drop=True)
 
-        X_not_scaled = all_data[area_names]
+        X_not_scaled = all_data.drop(target, axis=1)
         y = all_data[target]
         # Scale the data
         trans = StandardScaler()
@@ -114,14 +115,21 @@ def find_best_model(df_data_lst):
     accuracy = accuracy_score(y_test, y_pred)
     print(f"Finished! Final Model Accuracy: {accuracy}")
 
+"""
+run PCA on the data
+"""
 def run_PCA(x, y, n_comp):
     pca = PCA(n_components=n_comp)
     principal_components = pca.fit_transform(x)
     total_var = pca.explained_variance_ratio_.sum() * 100
     principal_df = pd.DataFrame(principal_components)
     final_df = pd.concat([principal_df, y], axis=1)
-    return final_df, total_var
+    components = pd.DataFrame(pca.components_, columns=area_names)
+    return final_df, total_var, components
 
+"""
+resample the data to a given size
+"""
 def resample_dfs(resample_size: int, dfs_lst: list) -> list:
     resampled_dfs = []
     for df in dfs_lst:
