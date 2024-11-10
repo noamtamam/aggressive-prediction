@@ -14,12 +14,12 @@ loser on the left
 """
 def plot_heatmap(mice_info_lst: list):
     for i, pair_data in enumerate(mice_info_lst):
-        mouse_1 = pair_data["mouse_1_data"]
-        mouse_2 = pair_data["mouse_2_data"]
-        date = pair_data["date"]
-        pair = pair_data["pair_name"]
+        mouse_1 = pair_data[COL_MOUSE_1_DATA]
+        mouse_2 = pair_data[COL_MOUSE_2_DATA]
+        date = pair_data[COL_DATE]
+        pair = pair_data[COL_PAIR_NAME]
         winning_mouse = pair.split("_")[1 + 2]
-        trial_num = pair_data["trial_num"]
+        trial_num = pair_data[COL_TRIAL_NUM]
         fig = make_subplots(rows=1, cols=2, subplot_titles=("Loser mouse's Brain activity ",
                                                             "Winner mouse's brain activity"),
                                                             shared_yaxes=True,)
