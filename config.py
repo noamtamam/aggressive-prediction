@@ -1,11 +1,9 @@
 #####################################################
-#                   Configuration                   #
+#               General Configuration               #
 #####################################################
 
-timing_table_path = f"../data/timing_table.csv"
-mat_file_path ='../data/{date}/{pair}/Matt_files/behaviorVectors_fa_miss.mat'
-roi_ca_data = 'ROICaData_stim'
-n_area = 24
+ROI_CA_DATA = 'ROICaData_stim'
+NUM_AREA = 24
 target = 'win'
 
 
@@ -35,12 +33,28 @@ COL_DATA_PAIR = 'PAIR'
 COL_DATA_NOTES = 'NOTES'
 
 #####################################################
+#                  Paths Configuration              #
+#####################################################
+# Base path for data
+BASE_PATH = "../"
+DATA_PATH = f"{BASE_PATH}data/"
+# File paths
+TIMING_TABLE_PATH = f"{DATA_PATH}timing_table.csv"
+GRAPH_OUTPUT_PATH = f"{BASE_PATH}graphs/"
+MAT_FILE_PATH_TEMPLATE = f'{DATA_PATH}{{date}}/{{pair}}/Matt_files/behaviorVectors_fa_miss.mat'
+
+#####################################################
+#             Parameters Configuration              #
+#####################################################
+N_PERMUTATIONS = 100
+ALPHA = 0.05
+NUM_FOLDS = 10
+
+#####################################################
 #               Messages Configuration              #
 #####################################################
 MSG_ERROR_LOADING_DATA = "there was an error loading the data for "
-
 MSG_FINISH_LOADING_DATA = "finished loading!"
-
 MSG_START_LOADING_DATA = "Loading the data to dataframes..."
 
 

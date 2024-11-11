@@ -31,22 +31,25 @@ def load_data():
 read the csv file and drop irelevant columns 
 """
 def load_timing_table() -> pd.DataFrame:
-    timing_table = pd.read_csv(timing_table_path)
+    timing_table = pd.read_csv(TIMING_TABLE_PATH)
     timing_table = timing_table.drop(COL_DATA_NOTES, axis=1)
     timing_table[COL_DATA_DATE] = timing_table[COL_DATA_DATE].astype('int').astype('str')
     return timing_table
 
 def load_trial_data(trial_row):
-    date, pair, trial_num, start_event, end_event, winner = trial_row[COL_DATA_DATE],\
-        trial_row[COL_DATA_PAIR], trial_row[COL_DATA_TRAIL] - 1, trial_row[COL_DATA_START_EVENT],\
-        trial_row[COL_DATA_END_EVENT], trial_row['WINNER NUM']
-    data_path = mat_file_path.format(date= date,pair= pair)
+    date = trial_row[COL_DATA_DATE]
+    pair = trial_row[COL_DATA_PAIR]
+    trial_num = trial_row[COL_DATA_TRAIL] - 1
+    start_event = trial_row[COL_DATA_START_EVENT]
+    end_event = trial_row[COL_DATA_END_EVENT]
+    winner = trial_row['WINNER NUM']
+    data_path = MAT_FILE_PATH_TEMPLATE.format(date=date, pair=pair)
     try:
         mat = scipy.io.loadmat(data_path)
         # slice the data to the relevante time of trial only
-        data = mat[roi_ca_data][:, trial_num, start_event:end_event]
-        mouse_1 = pd.DataFrame(data[:n_area, :]).transpose()
-        mouse_2 = pd.DataFrame(data[n_area:, :]).transpose()
+        data = mat[ROI_CA_DATA][:, trial_num, start_event:end_event]
+        mouse_1 = pd.DataFrame(data[:NUM_AREA, :]).transpose()
+        mouse_2 = pd.DataFrame(data[NUM_AREA:, :]).transpose()
         mouse_2.columns = area_names
         mouse_1.columns = area_names
         ## sets the win column to indicate in the df if the data is winner or loser

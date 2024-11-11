@@ -60,21 +60,21 @@ def plot_heatmap(mice_info_lst: list):
         fig.update_yaxes(title_text="Frame Number")
 
         # fig.write_image(f"../graphs/heatmap_brain_activity/png/brain_activity_{pair}_{date}_{trial_num}_{i}.png")
-        fig.write_html(f"../graphs/heatmap_brain_activity/html/brain_activity__{pair}_{date}_{trial_num}_{i}.html")
+        fig.write_html(f"{GRAPH_OUTPUT_PATH}heatmap_brain_activity/html/brain_activity__{pair}_{date}_{trial_num}_{i}.html")
 
 
 """
 box plot for the all data frame
 """
 def box_plot_area_activity(df):
-    df['win'] = df['win'].replace({1:'winner', 0:'losser'})
+    df['win'] = df['win'].replace({1: 'winner', 0: 'losser'})
     melted_df = pd.melt(df, id_vars='win', var_name='Feature')
     fig = px.box(melted_df, x='Feature', y='value', color='win', points=False,
                  title='Calcium values distribution in brian areas by Winner/Loser',
                  labels={'value': 'Values', 'win': 'winner / loser', 'Feature': 'Areas Names'})
     # fig.show()
-    fig.write_html("../graphs/brain_activity_average_loss.html")
-    fig.write_image("../graphs/brain_activity_average_loss.png")
+    fig.write_image(f"{GRAPH_OUTPUT_PATH}brain_activity_box_plot.png")
+    fig.write_html(f"{GRAPH_OUTPUT_PATH}brain_activity_box_plot.html")
 
 """
 calculate the mean of each area of the loser and the winner and plot the different between them in a bar plot
@@ -88,8 +88,8 @@ def plot_diffreneces(all_data):
     plot_bgcolor = 'rgba(0, 0, 0, 0)',)
     fig.update_yaxes(title= "Calcium Average Difference ")
     fig.update_xaxes(title= "Area names")
-    fig.write_html("../graphs/Difference_between_areas_no_abs_losser.html")
-    fig.write_image("../graphs/Difference_between_areas_no_abs_losser.png")
+    fig.write_html(f"{GRAPH_OUTPUT_PATH}Difference_between_areas_no_abs_losser.html")
+    fig.write_image(f"{GRAPH_OUTPUT_PATH}Difference_between_areas_no_abs_losser.png")
     fig.show()
 
 """
@@ -112,8 +112,8 @@ def plot_features_importance(svm_m):
                  template='plotly_white')
 
     fig.update_xaxes(tickangle=45, tickmode='array', tickvals=list(range(len(coef_df))), ticktext=coef_df['Features'])
-    fig.write_html("../graphs/SVM_Coefficients.html")
-    fig.write_image("../graphs/SVM_Coefficients.png")
+    fig.write_html(f"{GRAPH_OUTPUT_PATH}SVM_Coefficients.html")
+    fig.write_image(f"{GRAPH_OUTPUT_PATH}SVM_Coefficients.png")
     fig.show()
 """
 plot the data on the new principal components
@@ -135,8 +135,8 @@ def plot_PCA(pca_data, variance, components, n_dim):
                      ticktext=loadings_df_sorted['Features'])
 
     fig.show()
-    fig.write_html("../graphs/PCA/PC1_Components.html")
-    fig.write_image("../graphs/PCA/PC1_Components.png")
+    fig.write_html(f"{GRAPH_OUTPUT_PATH}PCA/PC1_Components.html")
+    fig.write_image(f"{GRAPH_OUTPUT_PATH}PCA/PC1_Components.png")
     if n_dim == 2:
         fig = px.scatter(pca_data, x=0, y=1, color=target,
                          title=f'Total Explained Variance: {variance:.2f}%')
@@ -147,5 +147,5 @@ def plot_PCA(pca_data, variance, components, n_dim):
             labels={'0': 'PC 1', '1': 'PC 2', '2': 'PC 3'}
         )
     if SAVE:
-        fig.write_html(f"../graphs/PCA/PCA_{n_dim}_component.html")
+        fig.write_html(f"{GRAPH_OUTPUT_PATH}PCA/PCA_{n_dim}_component.html")
 

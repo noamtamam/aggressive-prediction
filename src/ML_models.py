@@ -33,9 +33,7 @@ for 100 times shuffle the label column and and test the accuracy on the given mo
 calculate a p-value to represent the amount of time the random data was more acurate than the original accuracy. 
 """
 def compute_model_significance(svm_m, X, Y, observed_accuracy):
-    n_permutations = 100
-    num_folds = 10
-    kf= KFold(n_splits=num_folds, shuffle=True, random_state=42)
+    kf = KFold(n_splits=NUM_FOLDS, shuffle=True, random_state=42)
     def compute_permuted_accuracy():
         # Shuffle the labels
         shuffled_labels = sklearn.utils.shuffle(Y)
@@ -45,19 +43,18 @@ def compute_model_significance(svm_m, X, Y, observed_accuracy):
         return np.mean(shuffled_scores)
 
     # Parallelize the permutation test
-    permuted_accuracies = Parallel(n_jobs=-1)(delayed(compute_permuted_accuracy)() for _ in range(n_permutations))
+    permuted_accuracies = Parallel(n_jobs=-1)(delayed(compute_permuted_accuracy)() for _ in range(N_PERMUTATIONS))
 
     # Compute the p-value
-    p_value = (np.sum(permuted_accuracies >= observed_accuracy) + 1) / (n_permutations + 1)
+    p_value = (np.sum(permuted_accuracies >= observed_accuracy) + 1) / (N_PERMUTATIONS + 1)
 
     # Print results
     print("Observed Accuracy:", observed_accuracy)
     print("Permuted Accuracies:", permuted_accuracies)
     print("P-value:", p_value)
 
-    # Interpret the results   
-    alpha = 0.05  # significance level
-    if p_value < alpha:
+    # Interpret the results
+    if p_value < ALPHA:
         print("\nThe observed accuracy is significantly different from random chance.")
     else:
         print("\nThe observed accuracy is not significantly different from random chance.")
