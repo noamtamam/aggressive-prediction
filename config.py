@@ -21,10 +21,10 @@ COL_PAIR_NAME = "pair_name"
 COL_WINNER = "winner"
 COL_TRIAL_NUM = "trial_num"
 
-#######################################################
-#          Data Columns Configuration                 #
-#  (based on the given data sheet - can't be changed) #
-#######################################################
+#########################################################
+#          Data Columns Configuration                   #
+#  (based on the given data sheet - can't be changed)   #
+#########################################################
 COL_DATA_DATE = 'DATE'
 COL_DATA_START_EVENT = 'START NEURAL EVENT'
 COL_DATA_END_EVENT = 'END NEURAL EVENT'
